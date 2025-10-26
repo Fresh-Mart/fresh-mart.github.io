@@ -1,7 +1,37 @@
+
+const CartCount = () => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const updateCount = () => {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const totalItems = cart.reduce((sum: number, item: any) => sum + item.quantity, 0);
+      setCount(totalItems);
+    };
+
+    updateCount();
+    window.addEventListener('storage', updateCount);
+    window.addEventListener('cartUpdated', updateCount);
+
+    return () => {
+      window.removeEventListener('storage', updateCount);
+      window.removeEventListener('cartUpdated', updateCount);
+    };
+  }, []);
+
+  return (
+    <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
+      {count}
+    </span>
+  );
+};
+
+
 import { Link, useLocation } from "react-router-dom";
 import { ShoppingCart, User, Search, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
 
 const Header = () => {
   const location = useLocation();
@@ -38,9 +68,7 @@ const Header = () => {
             <Link to="/cart">
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                  0
-                </span>
+                <CartCount />
               </Button>
             </Link>
           </div>
