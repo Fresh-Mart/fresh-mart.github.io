@@ -4,3 +4,22 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
+
+[workflows]
+
+[[workflows.workflow]]
+name = "Build for GitHub Pages"
+author = 46234907
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run build"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"Build complete! Files are in the dist/ directory\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"Commit and push to GitHub to trigger deployment\""
